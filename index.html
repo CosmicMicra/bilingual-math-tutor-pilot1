@@ -436,13 +436,13 @@
         </div>
       </section>
 
-      <!-- Practice mode (before the practice question) -->
+      <!-- Practice mode (before training) -->
       <section id="screen-practice-mode" class="card practice-mode-step hidden">
-        <p class="phase-label">Practice mode</p>
-        <h2>Try the tabs on one question</h2>
-        <p>Not scored. Click <strong>every hint tab</strong>, then enter your answer. This is just to learn the platform.</p>
+        <p class="phase-label">Before training</p>
+        <h2>Part 2 — Training</h2>
+        <p>Eight Spanish math questions with the same optional hint tabs. Open hints <strong>only if you’re stuck</strong> — your deepest hint level is recorded.</p>
         <div class="btn-row" style="justify-content:center">
-          <button type="button" class="primary" id="btn-practice-mode">Start practice →</button>
+          <button type="button" class="primary" id="btn-practice-mode">Start training →</button>
         </div>
       </section>
 
@@ -602,7 +602,11 @@
     }
 
     function continueFromScaffoldIntro() {
-      logEvent('practice_mode_view', { phase: 'practice' });
+      startProblem();
+    }
+
+    function showPracticeModeBeforeTraining() {
+      logEvent('practice_mode_view', { phase: 'train' });
       showScreen('practice-mode');
     }
 
@@ -815,6 +819,8 @@
       const nextStep = pilotData.sequence[session.stepIndex];
       if (nextStep && completedPhase === 'pre' && nextStep.phase === 'practice') {
         showScaffoldIntro();
+      } else if (nextStep && completedPhase === 'practice' && nextStep.phase === 'train') {
+        showPracticeModeBeforeTraining();
       } else {
         startProblem();
       }
