@@ -300,45 +300,6 @@
       text-align: left;
     }
 
-    .break-card {
-      text-align: center;
-    }
-
-    .break-card h2 {
-      font-family: Fraunces, Georgia, serif;
-      font-size: 1.75rem;
-      color: var(--teal);
-      margin-bottom: 0.35rem;
-    }
-
-    .break-card .break-sub {
-      font-size: 1.05rem;
-      color: var(--ink);
-      margin: 0.75rem 0 1rem;
-      line-height: 1.5;
-    }
-
-    .break-card .break-next {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 1.25rem;
-    }
-
-    .break-gif {
-      width: min(280px, 85vw);
-      height: auto;
-      border-radius: 12px;
-      margin: 0 auto 1.25rem;
-      display: block;
-      box-shadow: var(--shadow);
-    }
-
-    .break-gif-fallback {
-      font-size: 4rem;
-      margin: 0 auto 1.25rem;
-      display: none;
-    }
-
     .scaffold-intro h2 {
       font-family: Fraunces, Georgia, serif;
       font-size: 1.35rem;
@@ -453,26 +414,6 @@
         <p class="step-meta">Use hints only when you need them in later parts.</p>
         <div class="btn-row">
           <button type="button" class="primary" id="btn-scaffold-intro">Got it — try the tabs →</button>
-        </div>
-      </section>
-
-      <!-- Part break -->
-      <section id="screen-break" class="card break-card hidden">
-        <p style="font-size:1.5rem;margin-bottom:0.25rem">🎉 🐱 ✨</p>
-        <h2 id="break-title">¡Yoo, amigos!</h2>
-        <p class="step-meta" style="margin:0 0 0.75rem">(friends) 👋</p>
-        <p class="break-sub" id="break-message">This part is done. Let's test now!</p>
-        <p class="break-next" id="break-next"></p>
-        <img
-          class="break-gif"
-          id="break-gif"
-          src="dancing-cat.gif"
-          alt="Dancing cat"
-          width="220"
-          height="124"
-        />
-        <div class="btn-row" style="justify-content:center">
-          <button type="button" class="primary" id="btn-break-continue">Let's go! →</button>
         </div>
       </section>
 
@@ -620,14 +561,8 @@
       URL.revokeObjectURL(a.href);
     }
 
-    const PART_BREAKS = {
-      train: {
-        next: 'Check-in next — Spanish questions with no hints. Let\'s see what you\'ve got!',
-      },
-    };
-
     function showScreen(name) {
-      ['intro', 'problem', 'scaffold-intro', 'break', 'vocab', 'done'].forEach((s) => {
+      ['intro', 'problem', 'scaffold-intro', 'vocab', 'done'].forEach((s) => {
         $('screen-' + s).classList.toggle('hidden', s !== name);
       });
     }
@@ -663,22 +598,6 @@
         const missing = HINT_LEVELS.filter(({ level }) => !problemState.levelsViewed.has(level)).length;
         banner.innerHTML = `👆 Click <strong>every tab</strong> to see how hints work (${missing} left), then answer.`;
       }
-    }
-
-    function showPartBreak(completedPhase) {
-      const info = PART_BREAKS[completedPhase];
-      if (!info) {
-        startProblem();
-        return;
-      }
-      $('break-message').textContent = "This part is done. Let's test now!";
-      $('break-next').textContent = info.next;
-      logEvent('part_break', { phase: completedPhase });
-      showScreen('break');
-    }
-
-    function continueFromBreak() {
-      startProblem();
     }
 
     function updatePhaseBar(phaseKey) {
@@ -860,14 +779,8 @@
       session.stepIndex += 1;
 
       const nextStep = pilotData.sequence[session.stepIndex];
-      if (nextStep && nextStep.phase !== completedPhase) {
-        if (completedPhase === 'pre' && nextStep.phase === 'practice') {
-          showScaffoldIntro();
-        } else if (PART_BREAKS[completedPhase]) {
-          showPartBreak(completedPhase);
-        } else {
-          startProblem();
-        }
+      if (nextStep && completedPhase === 'pre' && nextStep.phase === 'practice') {
+        showScaffoldIntro();
       } else {
         startProblem();
       }
@@ -1032,18 +945,6 @@
 
       $('btn-start').addEventListener('click', beginSession);
       $('btn-scaffold-intro').addEventListener('click', continueFromScaffoldIntro);
-      $('btn-break-continue').addEventListener('click', continueFromBreak);
-      const breakGif = $('break-gif');
-      if (breakGif) {
-        breakGif.addEventListener('error', () => {
-          breakGif.style.display = 'none';
-          const fb = document.createElement('p');
-          fb.className = 'break-gif-fallback';
-          fb.textContent = '🐱💃';
-          fb.style.display = 'block';
-          breakGif.parentNode.insertBefore(fb, breakGif.nextSibling);
-        });
-      }
       $('btn-submit').addEventListener('click', submitAnswer);
       $('btn-skip').addEventListener('click', skipProblem);
       $('answer-input').addEventListener('keydown', (ev) => {
