@@ -446,6 +446,16 @@
         </div>
       </section>
 
+      <!-- Check-in intro (before Part 3) -->
+      <section id="screen-checkin-intro" class="card practice-mode-step hidden">
+        <p class="phase-label">Part 3 — Check-in</p>
+        <h2>Five Spanish questions — no hints this time</h2>
+        <p>Good luck, amigos! 🤞</p>
+        <div class="btn-row" style="justify-content:center">
+          <button type="button" class="primary" id="btn-checkin-intro">Let's goo →</button>
+        </div>
+      </section>
+
       <!-- Vocab -->
       <section id="screen-vocab" class="card hidden">
         <p class="phase-label">Part 4 — Word check</p>
@@ -591,7 +601,7 @@
     }
 
     function showScreen(name) {
-      ['intro', 'problem', 'scaffold-intro', 'practice-mode', 'vocab', 'done'].forEach((s) => {
+      ['intro', 'problem', 'scaffold-intro', 'practice-mode', 'checkin-intro', 'vocab', 'done'].forEach((s) => {
         $('screen-' + s).classList.toggle('hidden', s !== name);
       });
     }
@@ -611,6 +621,15 @@
     }
 
     function continueFromPracticeMode() {
+      startProblem();
+    }
+
+    function showCheckinIntro() {
+      logEvent('checkin_intro_view', { phase: 'post' });
+      showScreen('checkin-intro');
+    }
+
+    function continueFromCheckinIntro() {
       startProblem();
     }
 
@@ -821,6 +840,8 @@
         showScaffoldIntro();
       } else if (nextStep && completedPhase === 'practice' && nextStep.phase === 'train') {
         showPracticeModeBeforeTraining();
+      } else if (nextStep && completedPhase === 'train' && nextStep.phase === 'post') {
+        showCheckinIntro();
       } else {
         startProblem();
       }
@@ -986,6 +1007,7 @@
       $('btn-start').addEventListener('click', beginSession);
       $('btn-scaffold-intro').addEventListener('click', continueFromScaffoldIntro);
       $('btn-practice-mode').addEventListener('click', continueFromPracticeMode);
+      $('btn-checkin-intro').addEventListener('click', continueFromCheckinIntro);
       $('btn-submit').addEventListener('click', submitAnswer);
       $('btn-skip').addEventListener('click', skipProblem);
       $('answer-input').addEventListener('keydown', (ev) => {
