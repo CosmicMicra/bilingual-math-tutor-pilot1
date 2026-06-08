@@ -318,7 +318,7 @@
       <!-- Intro -->
       <section id="screen-intro" class="card">
         <p class="phase-label">Welcome</p>
-        <p>This session takes about <strong>25–35 minutes</strong>. Five parts: English baseline, one practice problem, Spanish training with hints, Spanish check-in, and a short word quiz.</p>
+        <p>This session takes about <strong>15–20 minutes</strong>. Five parts: English baseline, one practice problem, Spanish training with hints, Spanish check-in, and a short word quiz.</p>
         <ul class="intro-list">
           <li><strong>Part 1 — Baseline:</strong> English word problems (no hints)</li>
           <li><strong>Practice:</strong> One Spanish problem with hints — not scored, just to learn the buttons</li>
@@ -326,10 +326,10 @@
           <li><strong>Part 3 — Check-in:</strong> Spanish only, no hint buttons</li>
           <li><strong>Part 4 — Words:</strong> 7 multiple-choice questions on those math words</li>
         </ul>
-        <label for="participant-id">Participant code *</label>
-        <input type="text" id="participant-id" placeholder="e.g. P001 (from your link)" autocomplete="off" />
-        <label for="display-name">First name or nickname (optional)</label>
-        <input type="text" id="display-name" placeholder="e.g. Alex" autocomplete="nickname" />
+        <label for="display-name">Full name *</label>
+        <input type="text" id="display-name" placeholder="e.g. Alex Smith" autocomplete="name" required />
+        <label for="participant-id">Participant code (optional)</label>
+        <input type="text" id="participant-id" placeholder="e.g. P007 — only if we sent you one" autocomplete="off" />
         <label class="consent">
           <input type="checkbox" id="screening" />
           <span>I do <strong>not</strong> speak Spanish (or I only know a few words like hola / gracias).</span>
@@ -453,6 +453,10 @@
       return s;
     }
 
+    function safeFilenamePart(s) {
+      return String(s).replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').slice(0, 48) || 'participant';
+    }
+
     function downloadCsv() {
       const headers = [
         'timestamp', 'participantId', 'displayName', 'event', 'phase',
@@ -495,7 +499,10 @@
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `pilot-${session.participantId}-${Date.now()}.csv`;
+      const fileStem = session.participantId
+        ? `${safeFilenamePart(session.displayName)}-${safeFilenamePart(session.participantId)}`
+        : safeFilenamePart(session.displayName);
+      a.download = `pilot-${fileStem}-${Date.now()}.csv`;
       a.click();
       URL.revokeObjectURL(a.href);
     }
@@ -782,12 +789,12 @@
     }
 
     function beginSession() {
-      const id = $('participant-id').value.trim();
       const name = $('display-name').value.trim();
+      const id = $('participant-id').value.trim();
       const err = $('intro-err');
 
-      if (!id) {
-        err.textContent = 'Please enter your participant code (e.g. P001).';
+      if (!name) {
+        err.textContent = 'Please enter your full name.';
         err.classList.remove('hidden');
         return;
       }
@@ -803,8 +810,8 @@
       }
       err.classList.add('hidden');
 
-      session.participantId = id;
       session.displayName = name;
+      session.participantId = id;
       session.startedAt = ts();
       session.stepIndex = 0;
 
