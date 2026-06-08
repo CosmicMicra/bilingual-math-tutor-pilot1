@@ -330,6 +330,24 @@
     }
 
     #practice-tutorial-banner { margin-bottom: 1rem; }
+
+    .practice-pep {
+      text-align: center;
+    }
+
+    .practice-pep h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.85rem;
+      color: var(--teal);
+      margin-bottom: 1.25rem;
+    }
+
+    .practice-pep .pep-main {
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -414,6 +432,15 @@
         <p class="step-meta">Use hints only when you need them in later parts.</p>
         <div class="btn-row">
           <button type="button" class="primary" id="btn-scaffold-intro">Got it — try the tabs →</button>
+        </div>
+      </section>
+
+      <!-- Practice pep (after tutorial, before practice) -->
+      <section id="screen-practice-pep" class="card practice-pep hidden">
+        <h2>¡Hurra! 💪 😍</h2>
+        <p class="pep-main">Now you know how the language levels work — let's learn some Spanish! 😎</p>
+        <div class="btn-row" style="justify-content:center">
+          <button type="button" class="primary" id="btn-practice-pep">Lets goo →</button>
         </div>
       </section>
 
@@ -562,7 +589,7 @@
     }
 
     function showScreen(name) {
-      ['intro', 'problem', 'scaffold-intro', 'vocab', 'done'].forEach((s) => {
+      ['intro', 'problem', 'scaffold-intro', 'practice-pep', 'vocab', 'done'].forEach((s) => {
         $('screen-' + s).classList.toggle('hidden', s !== name);
       });
     }
@@ -573,6 +600,11 @@
     }
 
     function continueFromScaffoldIntro() {
+      logEvent('practice_pep_view', { phase: 'practice' });
+      showScreen('practice-pep');
+    }
+
+    function continueFromPracticePep() {
       startProblem();
     }
 
@@ -945,6 +977,7 @@
 
       $('btn-start').addEventListener('click', beginSession);
       $('btn-scaffold-intro').addEventListener('click', continueFromScaffoldIntro);
+      $('btn-practice-pep').addEventListener('click', continueFromPracticePep);
       $('btn-submit').addEventListener('click', submitAnswer);
       $('btn-skip').addEventListener('click', skipProblem);
       $('answer-input').addEventListener('keydown', (ev) => {
