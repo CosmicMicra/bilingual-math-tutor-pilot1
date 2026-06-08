@@ -299,6 +299,38 @@
       font-size: 0.85rem;
       text-align: left;
     }
+
+    .break-card {
+      text-align: center;
+    }
+
+    .break-card h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.75rem;
+      color: var(--teal);
+      margin-bottom: 0.35rem;
+    }
+
+    .break-card .break-sub {
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin: 0.75rem 0 1rem;
+      line-height: 1.5;
+    }
+
+    .break-card .break-next {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .break-gif {
+      width: min(220px, 70vw);
+      border-radius: 12px;
+      margin: 0 auto 1.25rem;
+      display: block;
+      box-shadow: var(--shadow);
+    }
   </style>
 </head>
 <body>
@@ -364,6 +396,25 @@
           <button type="button" class="secondary hidden" id="btn-skip">Skip (unsolved)</button>
         </div>
         <p id="problem-feedback" class="feedback hidden"></p>
+      </section>
+
+      <!-- Part break -->
+      <section id="screen-break" class="card break-card hidden">
+        <p style="font-size:1.5rem;margin-bottom:0.25rem">🎉 🐱 ✨</p>
+        <h2 id="break-title">¡Yoo, amigos!</h2>
+        <p class="step-meta" style="margin:0 0 0.75rem">(friends) 👋</p>
+        <p class="break-sub" id="break-message">This part is done. Let's test now!</p>
+        <p class="break-next" id="break-next"></p>
+        <img
+          class="break-gif"
+          src="https://media.giphy.com/media/ICOgDUapi7P16/giphy.gif"
+          alt="Dancing cat"
+          width="220"
+          height="220"
+        />
+        <div class="btn-row" style="justify-content:center">
+          <button type="button" class="primary" id="btn-break-continue">Let's go! →</button>
+        </div>
       </section>
 
       <!-- Vocab -->
@@ -510,10 +561,41 @@
       URL.revokeObjectURL(a.href);
     }
 
+    const PART_BREAKS = {
+      pre: {
+        next: 'Time for a quick practice round with the hint buttons!',
+      },
+      practice: {
+        next: 'Training time — more Spanish problems with hints if you need them.',
+      },
+      train: {
+        next: 'Check-in next — same style, but no hints this time!',
+      },
+      post: {
+        next: 'Last bit: a short word-matching quiz. ¡Vamos!',
+      },
+    };
+
     function showScreen(name) {
-      ['intro', 'problem', 'vocab', 'done'].forEach((s) => {
+      ['intro', 'problem', 'break', 'vocab', 'done'].forEach((s) => {
         $('screen-' + s).classList.toggle('hidden', s !== name);
       });
+    }
+
+    function showPartBreak(completedPhase) {
+      const info = PART_BREAKS[completedPhase];
+      if (!info) {
+        startProblem();
+        return;
+      }
+      $('break-message').textContent = "This part is done. Let's test now!";
+      $('break-next').textContent = info.next;
+      logEvent('part_break', { phase: completedPhase });
+      showScreen('break');
+    }
+
+    function continueFromBreak() {
+      startProblem();
     }
 
     function updatePhaseBar(phaseKey) {
@@ -688,9 +770,16 @@
         timePerLevel: ps.timePerLevel,
       });
 
+      const completedPhase = ps.phase;
       problemState = null;
       session.stepIndex += 1;
-      startProblem();
+
+      const nextStep = pilotData.sequence[session.stepIndex];
+      if (nextStep && nextStep.phase !== completedPhase && PART_BREAKS[completedPhase]) {
+        showPartBreak(completedPhase);
+      } else {
+        startProblem();
+      }
     }
 
     function submitAnswer() {
@@ -843,6 +932,7 @@
       $('app').classList.remove('hidden');
 
       $('btn-start').addEventListener('click', beginSession);
+      $('btn-break-continue').addEventListener('click', continueFromBreak);
       $('btn-submit').addEventListener('click', submitAnswer);
       $('btn-skip').addEventListener('click', skipProblem);
       $('answer-input').addEventListener('keydown', (ev) => {
