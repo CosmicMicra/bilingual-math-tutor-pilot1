@@ -325,12 +325,50 @@
     }
 
     .break-gif {
-      width: min(220px, 70vw);
+      width: min(280px, 85vw);
+      height: auto;
       border-radius: 12px;
       margin: 0 auto 1.25rem;
       display: block;
       box-shadow: var(--shadow);
     }
+
+    .break-gif-fallback {
+      font-size: 4rem;
+      margin: 0 auto 1.25rem;
+      display: none;
+    }
+
+    .scaffold-intro h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.35rem;
+      color: var(--teal);
+      margin-bottom: 0.75rem;
+    }
+
+    .scaffold-intro .layer-list {
+      margin: 1rem 0 1.25rem;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .scaffold-intro .layer-list li {
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    .scaffold-intro .layer-list li:last-child { border-bottom: none; }
+
+    .scaffold-intro .layer-list strong {
+      color: var(--teal);
+      display: inline-block;
+      min-width: 7.5rem;
+    }
+
+    #practice-tutorial-banner { margin-bottom: 1rem; }
   </style>
 </head>
 <body>
@@ -389,6 +427,9 @@
           <p class="hint-legend">Open hints only if stuck — L2 glosses <em>story words</em>; L3 adds <em>math/structure words</em> plus all L2 glosses; deepest level opened is recorded</p>
           <div class="hint-row" id="hint-buttons"></div>
         </div>
+        <p id="practice-tutorial-banner" class="feedback info hidden">
+          👆 Click <strong>every tab</strong> above to see how each hint layer works, then enter your answer.
+        </p>
         <label for="answer-input">Your answer (number)</label>
         <input type="text" id="answer-input" inputmode="decimal" placeholder="e.g. 8" autocomplete="off" />
         <div class="btn-row">
@@ -396,6 +437,23 @@
           <button type="button" class="secondary hidden" id="btn-skip">Skip (unsolved)</button>
         </div>
         <p id="problem-feedback" class="feedback hidden"></p>
+      </section>
+
+      <!-- Scaffold tutorial (before practice) -->
+      <section id="screen-scaffold-intro" class="card scaffold-intro hidden">
+        <p class="phase-label">Before practice</p>
+        <h2>How the hint tabs work</h2>
+        <p>The next screen is a <strong>practice round</strong> (not scored). Before you answer, <strong>click every tab</strong> so you know what each layer does — you'll use these in Training.</p>
+        <ul class="layer-list">
+          <li><strong>Problem · ES</strong> The problem in Spanish (start here)</li>
+          <li><strong>L1 · L2 · L3</strong> Language hints — simpler Spanish, then more English word help</li>
+          <li><strong>L4 · English</strong> The full problem in English</li>
+          <li><strong>L5 · Steps</strong> Math hints — step-by-step solution</li>
+        </ul>
+        <p class="step-meta">Use hints only when you need them in later parts.</p>
+        <div class="btn-row">
+          <button type="button" class="primary" id="btn-scaffold-intro">Got it — try the tabs →</button>
+        </div>
       </section>
 
       <!-- Part break -->
@@ -407,10 +465,11 @@
         <p class="break-next" id="break-next"></p>
         <img
           class="break-gif"
-          src="https://media.giphy.com/media/ICOgDUapi7P16/giphy.gif"
+          id="break-gif"
+          src="dancing-cat.gif"
           alt="Dancing cat"
           width="220"
-          height="220"
+          height="124"
         />
         <div class="btn-row" style="justify-content:center">
           <button type="button" class="primary" id="btn-break-continue">Let's go! →</button>
@@ -568,9 +627,42 @@
     };
 
     function showScreen(name) {
-      ['intro', 'problem', 'break', 'vocab', 'done'].forEach((s) => {
+      ['intro', 'problem', 'scaffold-intro', 'break', 'vocab', 'done'].forEach((s) => {
         $('screen-' + s).classList.toggle('hidden', s !== name);
       });
+    }
+
+    function showScaffoldIntro() {
+      logEvent('scaffold_intro_view', { phase: 'practice' });
+      showScreen('scaffold-intro');
+    }
+
+    function continueFromScaffoldIntro() {
+      startProblem();
+    }
+
+    function allPracticeTabsViewed() {
+      if (!problemState || problemState.phase !== 'practice') return true;
+      return HINT_LEVELS.every(({ level }) => problemState.levelsViewed.has(level));
+    }
+
+    function updatePracticeTutorialBanner() {
+      const banner = $('practice-tutorial-banner');
+      if (!problemState || problemState.phase !== 'practice') {
+        banner.classList.add('hidden');
+        return;
+      }
+      banner.classList.remove('hidden');
+      if (allPracticeTabsViewed()) {
+        banner.classList.remove('info');
+        banner.classList.add('ok');
+        banner.innerHTML = '✓ Nice — you tried every tab. Now enter your answer below.';
+      } else {
+        banner.classList.remove('ok');
+        banner.classList.add('info');
+        const missing = HINT_LEVELS.filter(({ level }) => !problemState.levelsViewed.has(level)).length;
+        banner.innerHTML = `👆 Click <strong>every tab</strong> to see how hints work (${missing} left), then answer.`;
+      }
     }
 
     function showPartBreak(completedPhase) {
@@ -693,6 +785,7 @@
         level,
       });
       renderProblem();
+      updatePracticeTutorialBanner();
     }
 
     function renderProblem() {
@@ -702,7 +795,7 @@
       updatePhaseBar(phase);
       $('phase-title').textContent = {
         pre: 'Part 1 — Baseline (English)',
-        practice: 'Practice — try the hint buttons (not scored)',
+        practice: 'Practice — click every hint tab, then answer (not scored)',
         train: 'Part 2 — Training (Spanish + optional hints)',
         post: 'Part 3 — Check-in (Spanish, no hints)',
       }[phase] || phaseInfo.label;
@@ -740,6 +833,7 @@
       $('answer-input').focus();
       $('problem-feedback').classList.add('hidden');
       $('btn-skip').classList.toggle('hidden', phase === 'pre');
+      updatePracticeTutorialBanner();
     }
 
     function endProblem(solved) {
@@ -766,8 +860,14 @@
       session.stepIndex += 1;
 
       const nextStep = pilotData.sequence[session.stepIndex];
-      if (nextStep && nextStep.phase !== completedPhase && PART_BREAKS[completedPhase]) {
-        showPartBreak(completedPhase);
+      if (nextStep && nextStep.phase !== completedPhase) {
+        if (completedPhase === 'pre' && nextStep.phase === 'practice') {
+          showScaffoldIntro();
+        } else if (PART_BREAKS[completedPhase]) {
+          showPartBreak(completedPhase);
+        } else {
+          startProblem();
+        }
       } else {
         startProblem();
       }
@@ -775,6 +875,14 @@
 
     function submitAnswer() {
       if (!problemState) return;
+      if (!allPracticeTabsViewed()) {
+        const fb = $('problem-feedback');
+        fb.classList.remove('hidden', 'ok', 'err');
+        fb.classList.add('info');
+        fb.textContent = 'Please click every hint tab first so you know how they work.';
+        updatePracticeTutorialBanner();
+        return;
+      }
       const raw = $('answer-input').value;
       problemState.attempts += 1;
       const correct = isCorrectAnswer(raw, problemState.q.answer);
@@ -923,7 +1031,19 @@
       $('app').classList.remove('hidden');
 
       $('btn-start').addEventListener('click', beginSession);
+      $('btn-scaffold-intro').addEventListener('click', continueFromScaffoldIntro);
       $('btn-break-continue').addEventListener('click', continueFromBreak);
+      const breakGif = $('break-gif');
+      if (breakGif) {
+        breakGif.addEventListener('error', () => {
+          breakGif.style.display = 'none';
+          const fb = document.createElement('p');
+          fb.className = 'break-gif-fallback';
+          fb.textContent = '🐱💃';
+          fb.style.display = 'block';
+          breakGif.parentNode.insertBefore(fb, breakGif.nextSibling);
+        });
+      }
       $('btn-submit').addEventListener('click', submitAnswer);
       $('btn-skip').addEventListener('click', skipProblem);
       $('answer-input').addEventListener('keydown', (ev) => {
