@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spanish Math Scaffold Pilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6f2eb;
+      --surface: #fffef9;
+      --ink: #1a2e2e;
+      --muted: #5c6e6e;
+      --teal: #0d5c5c;
+      --teal-light: #e8f4f4;
+      --accent: #d4694a;
+      --accent-soft: #fdeee8;
+      --sage: #6b9b7a;
+      --border: #d4ddd8;
+      --shadow: 0 12px 40px rgba(13, 92, 92, 0.08);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(13, 92, 92, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(212, 105, 74, 0.08), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    header.brand {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header.brand h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.65rem;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: -0.02em;
+    }
+
+    header.brand p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.75rem;
+    }
+
+    .phase-bar {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .phase-dot {
+      flex: 1;
+      height: 6px;
+      border-radius: 99px;
+      background: var(--border);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .phase-dot.active { background: var(--teal); transform: scaleY(1.2); }
+    .phase-dot.done { background: var(--sage); }
+
+    .phase-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--teal);
+      margin-bottom: 0.5rem;
+    }
+
+    .step-meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .problem-box {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      padding: 1.25rem 1.35rem;
+      background: var(--teal-light);
+      border-radius: 10px;
+      border-left: 4px solid var(--teal);
+      margin-bottom: 1.25rem;
+      white-space: pre-wrap;
+    }
+
+    .problem-box.spanish { border-left-color: var(--accent); background: var(--accent-soft); }
+    .problem-box.english { border-left-color: var(--teal); background: var(--teal-light); }
+
+    .hint-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .hint-btn {
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .hint-btn:hover:not(:disabled) {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .hint-btn.active {
+      background: var(--teal);
+      color: white;
+      border-color: var(--teal);
+    }
+
+    .hint-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .hint-legend {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin: -0.5rem 0 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      font-family: inherit;
+      font-size: 1.1rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+
+    input:focus {
+      outline: 2px solid var(--teal);
+      outline-offset: 2px;
+    }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+
+    button.primary {
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      background: var(--teal);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+    }
+
+    button.primary:hover { background: #0a4a4a; }
+    button.primary:active { transform: scale(0.98); }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    button.secondary {
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.75rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    button.secondary:hover { border-color: var(--teal); color: var(--teal); }
+
+    .feedback {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .feedback.ok { background: #e8f5ec; color: #2d5a3d; }
+    .feedback.err { background: var(--accent-soft); color: #8b3d2a; }
+    .feedback.info { background: var(--teal-light); color: var(--teal); }
+
+    .intro-list {
+      margin: 1rem 0 1.25rem;
+      padding-left: 1.2rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .intro-list li { margin-bottom: 0.4rem; }
+
+    .consent {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin: 1.25rem 0;
+    }
+
+    .consent input { margin-top: 0.2rem; width: auto; }
+
+    .vocab-item {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .vocab-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    .vocab-item p {
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .choice input { width: auto; margin: 0; }
+
+    .done-icon {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .hidden { display: none !important; }
+
+    .load-err {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .load-err code {
+      display: block;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: #eee;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="brand">
+      <h1>Spanish Math Pilot</h1>
+      <p>Bilingual scaffolding study — no Spanish required</p>
+    </header>
+
+    <div id="load-error" class="card load-err hidden">
+      <p><strong>Could not load questions.</strong> Run a local server from the <code>testpilot</code> folder (see README).</p>
+      <code>npx --yes serve -p 3456</code>
+      <p style="margin-top:1rem">Then open <span id="load-url"></span></p>
+    </div>
+
+    <div id="app" class="hidden">
+      <!-- Intro -->
+      <section id="screen-intro" class="card">
+        <p class="phase-label">Welcome</p>
+        <p>This session takes about <strong>25–35 minutes</strong>. Five parts: English baseline, one practice problem, Spanish training with hints, Spanish check-in, and a short word quiz.</p>
+        <ul class="intro-list">
+          <li><strong>Part 1 — Baseline:</strong> English word problems (no hints)</li>
+          <li><strong>Practice:</strong> One Spanish problem with hints — not scored, just to learn the buttons</li>
+          <li><strong>Part 2 — Training:</strong> Spanish first, then L1 simpler ES → L2 story-word glosses → L3 math words + L2 → L4 English → L5 steps</li>
+          <li><strong>Part 3 — Check-in:</strong> Spanish only, no hint buttons</li>
+          <li><strong>Part 4 — Words:</strong> 7 multiple-choice questions on those math words</li>
+        </ul>
+        <label for="participant-id">Participant code *</label>
+        <input type="text" id="participant-id" placeholder="e.g. P001 (from your link)" autocomplete="off" />
+        <label for="display-name">First name or nickname (optional)</label>
+        <input type="text" id="display-name" placeholder="e.g. Alex" autocomplete="nickname" />
+        <label class="consent">
+          <input type="checkbox" id="screening" />
+          <span>I do <strong>not</strong> speak Spanish (or I only know a few words like hola / gracias).</span>
+        </label>
+        <label class="consent">
+          <input type="checkbox" id="consent" />
+          <span>I agree to take part in this research study. My answers are saved locally and shared only when I download the results file.</span>
+        </label>
+        <div class="btn-row">
+          <button type="button" class="primary" id="btn-start">Begin session</button>
+        </div>
+        <p id="intro-err" class="feedback err hidden"></p>
+      </section>
+
+      <!-- Problem -->
+      <section id="screen-problem" class="card hidden">
+        <div class="phase-bar" id="phase-bar"></div>
+        <p class="phase-label" id="phase-title"></p>
+        <p class="step-meta" id="step-meta"></p>
+        <div class="problem-box" id="problem-text"></div>
+        <div id="hint-area" class="hidden">
+          <p class="hint-legend">Open hints only if stuck — L2 glosses <em>story words</em>; L3 adds <em>math/structure words</em> plus all L2 glosses; deepest level opened is recorded</p>
+          <div class="hint-row" id="hint-buttons"></div>
+        </div>
+        <label for="answer-input">Your answer (number)</label>
+        <input type="text" id="answer-input" inputmode="decimal" placeholder="e.g. 8" autocomplete="off" />
+        <div class="btn-row">
+          <button type="button" class="primary" id="btn-submit">Submit answer</button>
+          <button type="button" class="secondary hidden" id="btn-skip">Skip (unsolved)</button>
+        </div>
+        <p id="problem-feedback" class="feedback hidden"></p>
+      </section>
+
+      <!-- Vocab -->
+      <section id="screen-vocab" class="card hidden">
+        <p class="phase-label">Part 4 — Word check</p>
+        <p class="step-meta">These words appeared in the L2/L3 hint layers during training. Pick the best English meaning.</p>
+        <div id="vocab-list"></div>
+        <div class="btn-row" style="margin-top:1.25rem">
+          <button type="button" class="primary" id="btn-vocab-done">Continue</button>
+        </div>
+      </section>
+
+      <!-- Done -->
+      <section id="screen-done" class="card hidden">
+        <div class="done-icon">✓</div>
+        <p class="phase-label">Session complete</p>
+        <p style="margin-bottom:1rem">Thank you! Download your results file and send it to the researcher (email or upload link they gave you).</p>
+        <p class="step-meta" id="done-summary"></p>
+        <div class="btn-row">
+          <button type="button" class="primary" id="btn-download">Download results (CSV)</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const PHASES = [
+      { key: 'pre', label: 'Baseline', short: 'EN' },
+      { key: 'practice', label: 'Practice', short: 'Try' },
+      { key: 'train', label: 'Training', short: 'ES+hints' },
+      { key: 'post', label: 'Check-in', short: 'ES' },
+      { key: 'vocab', label: 'Words', short: 'Quiz' },
+    ];
+
+    function usesHints(phase) {
+      return phase === 'train' || phase === 'practice';
+    }
+
+    function phaseSolvedStats(phase) {
+      const ends = log.filter((r) => r.event === 'problem_end' && r.phase === phase);
+      const solved = ends.filter((r) => r.solved === true).length;
+      return { solved, total: ends.length };
+    }
+
+    let pilotData = null;
+    let log = [];
+    let session = {
+      participantId: '',
+      displayName: '',
+      startedAt: null,
+      stepIndex: 0,
+      vocabAnswers: {},
+    };
+
+    let problemState = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    function paramsId() {
+      return new URLSearchParams(location.search).get('id') || '';
+    }
+
+    function ts() {
+      return new Date().toISOString();
+    }
+
+    function logEvent(event, payload = {}) {
+      log.push({
+        timestamp: ts(),
+        participantId: session.participantId,
+        displayName: session.displayName,
+        event,
+        ...payload,
+      });
+    }
+
+    function clean(val) {
+      return String(val).replace(/[^0-9.]/g, '').trim();
+    }
+
+    function isCorrectAnswer(user, expected) {
+      const u = clean(user);
+      const e = clean(expected);
+      return u !== '' && u === e;
+    }
+
+    function csvEscape(v) {
+      const s = String(v ?? '');
+      if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    }
+
+    function downloadCsv() {
+      const headers = [
+        'timestamp', 'participantId', 'displayName', 'event', 'phase',
+        'questionId', 'stepIndex', 'level', 'answer', 'correct',
+        'attemptNumber', 'maxHintLevel', 'levelsUsed', 'timeMs', 'solved', 'scored',
+        'vocabId', 'vocabCorrect', 'extra',
+      ];
+      const rows = log.map((row) => {
+        const extra = { ...row };
+        ['timestamp', 'participantId', 'displayName', 'event', 'phase',
+          'questionId', 'stepIndex', 'level', 'answer', 'correct',
+          'attemptNumber', 'maxHintLevel', 'levelsUsed', 'timeMs', 'solved', 'scored',
+          'vocabId', 'vocabCorrect'].forEach((k) => delete extra[k]);
+        const levelsUsed = row.levelsUsed != null
+          ? (Array.isArray(row.levelsUsed) ? row.levelsUsed.join('|') : row.levelsUsed)
+          : '';
+        return [
+          row.timestamp,
+          row.participantId,
+          row.displayName,
+          row.event,
+          row.phase ?? '',
+          row.questionId ?? '',
+          row.stepIndex ?? '',
+          row.level ?? '',
+          row.answer ?? '',
+          row.correct ?? '',
+          row.attemptNumber ?? '',
+          row.maxHintLevel ?? '',
+          levelsUsed,
+          row.timeMs ?? '',
+          row.solved ?? '',
+          row.scored ?? '',
+          row.vocabId ?? '',
+          row.vocabCorrect ?? '',
+          Object.keys(extra).length ? JSON.stringify(extra) : '',
+        ].map(csvEscape).join(',');
+      });
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `pilot-${session.participantId}-${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function showScreen(name) {
+      ['intro', 'problem', 'vocab', 'done'].forEach((s) => {
+        $('screen-' + s).classList.toggle('hidden', s !== name);
+      });
+    }
+
+    function updatePhaseBar(phaseKey) {
+      const bar = $('phase-bar');
+      bar.innerHTML = '';
+      const idx = PHASES.findIndex((p) => p.key === phaseKey);
+      PHASES.forEach((p, i) => {
+        const d = document.createElement('div');
+        d.className = 'phase-dot' + (i < idx ? ' done' : '') + (i === idx ? ' active' : '');
+        d.title = p.label;
+        bar.appendChild(d);
+      });
+    }
+
+    function getQuestion(id) {
+      return pilotData.questions[id];
+    }
+
+    const HINT_LEVELS = [
+      { level: 0, label: 'Problem · ES' },
+      { level: 1, label: 'L1 · Simpler ES' },
+      { level: 2, label: 'L2 · New glosses' },
+      { level: 3, label: 'L3 · All glosses' },
+      { level: 4, label: 'L4 · English' },
+      { level: 5, label: 'L5 · Steps' },
+    ];
+
+    function scaffoldText(s, level) {
+      const map = {
+        0: s.L0_spanish,
+        1: s.L1_simplified,
+        2: s.L2_new_glosses,
+        3: s.L3_all_glosses,
+        4: s.L4_english,
+        5: s.L5_solution,
+      };
+      return map[level] || s.L0_spanish || '';
+    }
+
+    function problemDisplayText(q, phase, activeLevel) {
+      const s = q.scaffolds || {};
+      if (phase === 'pre') return q.problem_text;
+      if (phase === 'post') return s.L0_spanish || s.L3_spanish || q.problem_text;
+      if (usesHints(phase)) return scaffoldText(s, activeLevel);
+      return q.problem_text;
+    }
+
+    function startProblem() {
+      const step = pilotData.sequence[session.stepIndex];
+      if (!step) {
+        startVocab();
+        return;
+      }
+
+      const q = getQuestion(step.questionId);
+      const phase = step.phase;
+      problemState = {
+        step,
+        q,
+        phase,
+        activeLevel: 0,
+        levelsViewed: new Set([0]),
+        maxHintLevel: 0,
+        scored: step.scored !== false,
+        attempts: 0,
+        startMs: Date.now(),
+        lastLevelMs: Date.now(),
+        timePerLevel: {},
+        solved: false,
+      };
+
+      problemState.timePerLevel[problemState.activeLevel] = 0;
+
+      logEvent('problem_start', {
+        phase,
+        questionId: q.id,
+        stepIndex: session.stepIndex,
+        level: problemState.activeLevel,
+      });
+
+      renderProblem();
+      showScreen('problem');
+    }
+
+    function flushLevelTime() {
+      if (!problemState) return;
+      const now = Date.now();
+      const dt = now - problemState.lastLevelMs;
+      const lv = problemState.activeLevel;
+      problemState.timePerLevel[lv] = (problemState.timePerLevel[lv] || 0) + dt;
+      problemState.lastLevelMs = now;
+    }
+
+    function setLevel(level) {
+      if (!problemState || !usesHints(problemState.phase)) return;
+      flushLevelTime();
+      problemState.activeLevel = level;
+      problemState.levelsViewed.add(level);
+      if (level > problemState.maxHintLevel) problemState.maxHintLevel = level;
+      logEvent('level_view', {
+        phase: problemState.phase,
+        questionId: problemState.q.id,
+        stepIndex: session.stepIndex,
+        level,
+      });
+      renderProblem();
+    }
+
+    function renderProblem() {
+      const { step, q, phase, activeLevel } = problemState;
+      const phaseInfo = PHASES.find((p) => p.key === phase) || { label: phase };
+
+      updatePhaseBar(phase);
+      $('phase-title').textContent = {
+        pre: 'Part 1 — Baseline (English)',
+        practice: 'Practice — try the hint buttons (not scored)',
+        train: 'Part 2 — Training (Spanish + optional hints)',
+        post: 'Part 3 — Check-in (Spanish, no hints)',
+      }[phase] || phaseInfo.label;
+
+      const totalInPhase = pilotData.sequence.filter((s) => s.phase === phase).length;
+      const indexInPhase = pilotData.sequence
+        .slice(0, session.stepIndex + 1)
+        .filter((s) => s.phase === phase).length;
+      $('step-meta').textContent =
+        `Question ${indexInPhase} of ${totalInPhase} · ID ${q.id} · Overall step ${session.stepIndex + 1}/${pilotData.sequence.length}`;
+
+      const box = $('problem-text');
+      box.textContent = problemDisplayText(q, phase, activeLevel);
+      box.classList.toggle('spanish', phase !== 'pre' && activeLevel !== 4);
+      box.classList.toggle('english', activeLevel === 4);
+
+      const hintArea = $('hint-area');
+      const hintBtns = $('hint-buttons');
+      if (usesHints(phase)) {
+        hintArea.classList.remove('hidden');
+        hintBtns.innerHTML = '';
+        HINT_LEVELS.forEach(({ level, label }) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'hint-btn' + (activeLevel === level ? ' active' : '');
+          b.textContent = label;
+          b.addEventListener('click', () => setLevel(level));
+          hintBtns.appendChild(b);
+        });
+      } else {
+        hintArea.classList.add('hidden');
+      }
+
+      $('answer-input').value = '';
+      $('answer-input').focus();
+      $('problem-feedback').classList.add('hidden');
+      $('btn-skip').classList.toggle('hidden', phase === 'pre');
+    }
+
+    function endProblem(solved) {
+      flushLevelTime();
+      const ps = problemState;
+      const timeMs = Date.now() - ps.startMs;
+      const levelsUsed = Array.from(ps.levelsViewed).sort((a, b) => a - b);
+
+      logEvent('problem_end', {
+        phase: ps.phase,
+        questionId: ps.q.id,
+        stepIndex: session.stepIndex,
+        maxHintLevel: ps.maxHintLevel,
+        levelsUsed,
+        timeMs,
+        solved,
+        scored: ps.scored,
+        attempts: ps.attempts,
+        timePerLevel: ps.timePerLevel,
+      });
+
+      problemState = null;
+      session.stepIndex += 1;
+      startProblem();
+    }
+
+    function submitAnswer() {
+      if (!problemState) return;
+      const raw = $('answer-input').value;
+      problemState.attempts += 1;
+      const correct = isCorrectAnswer(raw, problemState.q.answer);
+
+      logEvent('submit', {
+        phase: problemState.phase,
+        questionId: problemState.q.id,
+        stepIndex: session.stepIndex,
+        level: problemState.activeLevel,
+        answer: raw,
+        correct,
+        attemptNumber: problemState.attempts,
+      });
+
+      const fb = $('problem-feedback');
+      fb.classList.remove('hidden', 'ok', 'err');
+
+      if (correct) {
+        fb.classList.add('ok');
+        fb.textContent = 'Correct — moving to the next question.';
+        problemState.solved = true;
+        setTimeout(() => endProblem(true), 700);
+      } else {
+        fb.classList.add('err');
+        fb.textContent = 'Not quite — try again, or use a hint layer if you are stuck.';
+      }
+    }
+
+    function skipProblem() {
+      if (!problemState || problemState.phase === 'pre') return;
+      endProblem(false);
+    }
+
+    function startVocab() {
+      updatePhaseBar('vocab');
+      showScreen('vocab');
+      const list = $('vocab-list');
+      list.innerHTML = '';
+      pilotData.vocab.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'vocab-item';
+        const prompt = item.prompt.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        div.innerHTML = `<p>${prompt}</p>`;
+        item.choices.forEach((choice, i) => {
+          const label = document.createElement('label');
+          label.className = 'choice';
+          const radio = document.createElement('input');
+          radio.type = 'radio';
+          radio.name = 'vocab-' + item.id;
+          radio.value = String(i);
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(choice));
+          div.appendChild(label);
+        });
+        list.appendChild(div);
+      });
+      logEvent('vocab_start', { phase: 'vocab' });
+    }
+
+    function finishVocab() {
+      const missing = pilotData.vocab.filter(
+        (item) => !document.querySelector(`input[name="vocab-${item.id}"]:checked`)
+      );
+      if (missing.length) {
+        alert('Please answer all vocabulary questions before continuing.');
+        return;
+      }
+
+      let correctCount = 0;
+      pilotData.vocab.forEach((item) => {
+        const sel = document.querySelector(`input[name="vocab-${item.id}"]:checked`);
+        const chosen = sel ? parseInt(sel.value, 10) : -1;
+        const ok = chosen === item.correct;
+        if (ok) correctCount += 1;
+        session.vocabAnswers[item.id] = chosen;
+        logEvent('vocab_answer', {
+          phase: 'vocab',
+          vocabId: item.id,
+          answer: chosen,
+          vocabCorrect: ok,
+        });
+      });
+
+      logEvent('session_end', {
+        vocabScore: correctCount,
+        vocabTotal: pilotData.vocab.length,
+      });
+
+      const pre = phaseSolvedStats('pre');
+      const train = phaseSolvedStats('train');
+      const post = phaseSolvedStats('post');
+      $('done-summary').textContent =
+        `Baseline: ${pre.solved}/${pre.total} · Training: ${train.solved}/${train.total} · Check-in: ${post.solved}/${post.total} · Vocabulary: ${correctCount}/${pilotData.vocab.length}`;
+      showScreen('done');
+    }
+
+    function beginSession() {
+      const id = $('participant-id').value.trim();
+      const name = $('display-name').value.trim();
+      const err = $('intro-err');
+
+      if (!id) {
+        err.textContent = 'Please enter your participant code (e.g. P001).';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (!$('screening').checked) {
+        err.textContent = 'This study is for people who do not speak Spanish. Please confirm the screening statement.';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (!$('consent').checked) {
+        err.textContent = 'Please confirm consent to continue.';
+        err.classList.remove('hidden');
+        return;
+      }
+      err.classList.add('hidden');
+
+      session.participantId = id;
+      session.displayName = name;
+      session.startedAt = ts();
+      session.stepIndex = 0;
+
+      logEvent('session_start', {
+        userAgent: navigator.userAgent,
+        screen: `${screen.width}x${screen.height}`,
+      });
+
+      startProblem();
+    }
+
+    async function init() {
+      const prefill = paramsId();
+      if (prefill) $('participant-id').value = prefill;
+
+      try {
+        const res = await fetch('pilot-questions.json');
+        if (!res.ok) throw new Error(res.statusText);
+        pilotData = await res.json();
+      } catch (e) {
+        $('load-error').classList.remove('hidden');
+        $('load-url').textContent = location.origin + location.pathname;
+        return;
+      }
+
+      $('app').classList.remove('hidden');
+
+      $('btn-start').addEventListener('click', beginSession);
+      $('btn-submit').addEventListener('click', submitAnswer);
+      $('btn-skip').addEventListener('click', skipProblem);
+      $('answer-input').addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') submitAnswer();
+      });
+      $('btn-vocab-done').addEventListener('click', finishVocab);
+      $('btn-download').addEventListener('click', downloadCsv);
+    }
+
+    init();
+  </script>
+</body>
+</html>

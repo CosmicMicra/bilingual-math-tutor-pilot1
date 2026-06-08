@@ -1,0 +1,249 @@
+{
+  "version": 4,
+  "title": "Spanish Math Scaffold Pilot",
+  "design_note": "L2 glosses story/content words (nouns, scene verbs). L3 adds math/structure words (tiene, cuántos, hay, le da, en total, etc.) plus every L2 gloss.",
+  "scaffold_ladder": [
+    { "level": 0, "name": "Problem", "description": "Full Spanish (challenge)" },
+    { "level": 1, "name": "L1", "description": "Simplified Spanish" },
+    { "level": 2, "name": "L2", "description": "Spanish + English glosses for story/content words" },
+    { "level": 3, "name": "L3", "description": "Spanish + glosses for math/structure words + all L2 glosses" },
+    { "level": 4, "name": "L4", "description": "Full English" },
+    { "level": 5, "name": "L5", "description": "Worked solution" }
+  ],
+  "core_vocabulary": [
+    { "id": "mas", "spanish": "más", "english": "more", "train_items": ["1.1.01", "1.1.05", "1.1.07"] },
+    { "id": "cuantos", "spanish": "cuántos / cuántas", "english": "how many", "train_items": ["1.1.01", "1.1.02", "1.1.03", "1.1.04", "1.1.05", "1.1.06", "1.1.07", "1.1.08"] },
+    { "id": "tiene", "spanish": "tiene", "english": "has", "train_items": ["1.1.01", "1.1.03", "1.1.05", "1.1.07"] },
+    { "id": "quedan", "spanish": "quedan", "english": "are left", "train_items": ["1.1.02", "1.1.04", "1.1.06", "1.1.08"] },
+    { "id": "toma", "spanish": "toma", "english": "takes", "train_items": ["1.1.02"] },
+    { "id": "da", "spanish": "da / le da", "english": "gives", "train_items": ["1.1.05", "1.1.07"] },
+    { "id": "en_total", "spanish": "en total", "english": "in total", "train_items": ["1.1.03"] }
+  ],
+  "sequence": [
+    { "phase": "pre", "questionId": "1.1.01", "index": 0 },
+    { "phase": "pre", "questionId": "1.1.02", "index": 1 },
+    { "phase": "pre", "questionId": "1.1.03", "index": 2 },
+    { "phase": "pre", "questionId": "1.1.04", "index": 3 },
+    { "phase": "pre", "questionId": "1.1.05", "index": 4 },
+    { "phase": "practice", "questionId": "1.1.09", "index": 0, "scored": false },
+    { "phase": "train", "questionId": "1.1.01", "index": 0 },
+    { "phase": "train", "questionId": "1.1.02", "index": 1 },
+    { "phase": "train", "questionId": "1.1.03", "index": 2 },
+    { "phase": "train", "questionId": "1.1.04", "index": 3 },
+    { "phase": "train", "questionId": "1.1.05", "index": 4 },
+    { "phase": "train", "questionId": "1.1.06", "index": 5 },
+    { "phase": "train", "questionId": "1.1.07", "index": 6 },
+    { "phase": "train", "questionId": "1.1.08", "index": 7 },
+    { "phase": "post", "questionId": "1.1.01", "index": 0 },
+    { "phase": "post", "questionId": "1.1.02", "index": 1 },
+    { "phase": "post", "questionId": "1.1.03", "index": 2 },
+    { "phase": "post", "questionId": "1.1.04", "index": 3 },
+    { "phase": "post", "questionId": "1.1.05", "index": 4 }
+  ],
+  "questions": {
+    "1.1.09": {
+      "id": "1.1.09",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "A pet store has 11 cats and 7 dogs. How many animals are in the store?",
+      "answer": "18",
+      "gloss_l2": ["tiene", "gatos", "perros", "cuántos"],
+      "gloss_l3_adds": ["tienda", "y", "hay"],
+      "scaffolds": {
+        "L0_spanish": "Una tienda tiene 11 gatos y 7 perros. ¿Cuántos animales hay?",
+        "L1_simplified": "Hay 11 gatos y 7 perros. ¿Cuántos animales hay?",
+        "L2_new_glosses": "Una tienda tiene (has) 11 gatos (cats) y 7 perros (dogs). ¿Cuántos (how many) animales hay?",
+        "L3_all_glosses": "Una tienda (store) tiene (has) 11 gatos (cats) y (and) 7 perros (dogs). ¿Cuántos (how many) animales hay (are there)?",
+        "L4_english": "A pet store has 11 cats and 7 dogs. How many animals are in the store?",
+        "L5_solution": "Step 1: Add — 11 + 7\nStep 2: = 18\nAnswer: 18"
+      }
+    },
+    "1.1.01": {
+      "id": "1.1.01",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "Sam has 5 apples. He gets 3 more apples. How many apples does Sam have now?",
+      "answer": "8",
+      "gloss_l2": ["manzanas", "Recibe", "más", "ahora"],
+      "gloss_l3_adds": ["tiene", "cuántas"],
+      "scaffolds": {
+        "L0_spanish": "Sam tiene 5 manzanas. Recibe 3 más. ¿Cuántas manzanas tiene ahora?",
+        "L1_simplified": "Sam tiene 5 manzanas. Recibe 3 más. ¿Cuántas tiene?",
+        "L2_new_glosses": "Sam tiene 5 manzanas (apples). Recibe (gets) 3 más (more). ¿Cuántas manzanas tiene ahora (now)?",
+        "L3_all_glosses": "Sam tiene (has) 5 manzanas (apples). Recibe (gets) 3 más (more). ¿Cuántas (how many) manzanas tiene (has) ahora (now)?",
+        "L4_english": "Sam has 5 apples. He gets 3 more apples. How many apples does Sam have now?",
+        "L5_solution": "Step 1: Add — 5 + 3\nStep 2: = 8\nAnswer: 8"
+      }
+    },
+    "1.1.02": {
+      "id": "1.1.02",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "A box has 10 crayons. A boy takes 4 crayons. How many crayons are left?",
+      "answer": "6",
+      "gloss_l2": ["caja", "niño", "toma", "quedan"],
+      "gloss_l3_adds": ["tiene", "cuántos"],
+      "scaffolds": {
+        "L0_spanish": "Una caja tiene 10 crayones. Un niño toma 4. ¿Cuántos quedan?",
+        "L1_simplified": "Hay 10 crayones. Toma 4. ¿Cuántos quedan?",
+        "L2_new_glosses": "Una caja (box) tiene 10 crayones. Un niño (boy) toma (takes) 4. ¿Cuántos quedan (are left)?",
+        "L3_all_glosses": "Una caja (box) tiene (has) 10 crayones. Un niño (boy) toma (takes) 4. ¿Cuántos (how many) quedan (are left)?",
+        "L4_english": "A box has 10 crayons. A boy takes 4 crayons. How many crayons are left?",
+        "L5_solution": "Step 1: Subtract — 10 - 4\nStep 2: = 6\nAnswer: 6"
+      }
+    },
+    "1.1.03": {
+      "id": "1.1.03",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "A girl has 7 red balls and 2 blue balls. How many balls does she have in all?",
+      "answer": "9",
+      "gloss_l2": ["pelotas", "rojas", "azules"],
+      "gloss_l3_adds": ["niña", "tiene", "cuántas", "en total"],
+      "scaffolds": {
+        "L0_spanish": "Una niña tiene 7 pelotas rojas y 2 azules. ¿Cuántas tiene en total?",
+        "L1_simplified": "Tiene 7 pelotas rojas y 2 azules. ¿Cuántas en total?",
+        "L2_new_glosses": "Una niña tiene 7 pelotas (balls) rojas (red) y 2 azules (blue). ¿Cuántas tiene en total?",
+        "L3_all_glosses": "Una niña (girl) tiene (has) 7 pelotas (balls) rojas (red) y 2 azules (blue). ¿Cuántas (how many) tiene (has) en total (in total)?",
+        "L4_english": "A girl has 7 red balls and 2 blue balls. How many balls does she have in all?",
+        "L5_solution": "Step 1: Add — 7 + 2\nStep 2: = 9\nAnswer: 9"
+      }
+    },
+    "1.1.04": {
+      "id": "1.1.04",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "There are 12 birds on a tree. 5 birds fly away. How many birds are on the tree now?",
+      "answer": "7",
+      "gloss_l2": ["pájaros", "árbol", "vuelan"],
+      "gloss_l3_adds": ["cuántos", "en un", "quedan"],
+      "scaffolds": {
+        "L0_spanish": "Hay 12 pájaros en un árbol. 5 vuelan. ¿Cuántos quedan?",
+        "L1_simplified": "Hay 12 pájaros. 5 vuelan. ¿Cuántos quedan?",
+        "L2_new_glosses": "Hay 12 pájaros (birds) en un árbol (tree). 5 vuelan (fly away). ¿Cuántos quedan?",
+        "L3_all_glosses": "Hay 12 pájaros (birds) en un (in a) árbol (tree). 5 vuelan (fly away). ¿Cuántos (how many) quedan (are left)?",
+        "L4_english": "There are 12 birds on a tree. 5 birds fly away. How many birds are on the tree now?",
+        "L5_solution": "Step 1: Subtract — 12 - 5\nStep 2: = 7\nAnswer: 7"
+      }
+    },
+    "1.1.05": {
+      "id": "1.1.05",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "Tom has 6 toy cars. His dad gives him 4 more toy cars. How many toy cars does Tom have?",
+      "answer": "10",
+      "gloss_l2": ["carros", "juguete", "de"],
+      "gloss_l3_adds": ["tiene", "papá", "le da", "más", "cuántos"],
+      "scaffolds": {
+        "L0_spanish": "Tom tiene 6 carros de juguete. Su papá le da 4 más. ¿Cuántos tiene?",
+        "L1_simplified": "Tom tiene 6 carros. Le da 4 más. ¿Cuántos tiene?",
+        "L2_new_glosses": "Tom tiene 6 carros (cars) de (of) juguete (toy). Su papá le da 4 más. ¿Cuántos tiene?",
+        "L3_all_glosses": "Tom tiene (has) 6 carros (cars) de (of) juguete (toy). Su papá (his dad) le da (gives) 4 más (more). ¿Cuántos (how many) tiene (has)?",
+        "L4_english": "Tom has 6 toy cars. His dad gives him 4 more toy cars. How many toy cars does Tom have?",
+        "L5_solution": "Step 1: Add — 6 + 4\nStep 2: = 10\nAnswer: 10"
+      }
+    },
+    "1.1.06": {
+      "id": "1.1.06",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "A bag has 15 marbles. A girl takes out 6 marbles. How many marbles are in the bag?",
+      "answer": "9",
+      "gloss_l2": ["bolsa", "niña", "saca", "canicas"],
+      "gloss_l3_adds": ["tiene", "cuántas", "quedan"],
+      "scaffolds": {
+        "L0_spanish": "Una bolsa tiene 15 canicas. Una niña saca 6. ¿Cuántas quedan?",
+        "L1_simplified": "Hay 15 canicas. Saca 6. ¿Cuántas quedan?",
+        "L2_new_glosses": "Una bolsa (bag) tiene 15 canicas (marbles). Una niña (girl) saca (takes out) 6. ¿Cuántas quedan?",
+        "L3_all_glosses": "Una bolsa (bag) tiene (has) 15 canicas (marbles). Una niña (girl) saca (takes out) 6. ¿Cuántas (how many) quedan (are left)?",
+        "L4_english": "A bag has 15 marbles. A girl takes out 6 marbles. How many marbles are in the bag?",
+        "L5_solution": "Step 1: Subtract — 15 - 6\nStep 2: = 9\nAnswer: 9"
+      }
+    },
+    "1.1.07": {
+      "id": "1.1.07",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "Ana has 8 books. Her friend gives her 5 more books. How many books does Ana have now?",
+      "answer": "13",
+      "gloss_l2": ["libros", "amiga", "más", "ahora"],
+      "gloss_l3_adds": ["tiene", "cuántos", "le da"],
+      "scaffolds": {
+        "L0_spanish": "Ana tiene 8 libros. Su amiga le da 5 más. ¿Cuántos libros tiene ahora?",
+        "L1_simplified": "Ana tiene 8 libros. Le da 5 más. ¿Cuántos tiene?",
+        "L2_new_glosses": "Ana tiene 8 libros (books). Su amiga (friend) le da 5 más (more). ¿Cuántos libros tiene ahora (now)?",
+        "L3_all_glosses": "Ana tiene (has) 8 libros (books). Su amiga (friend) le da (gives) 5 más (more). ¿Cuántos (how many) libros tiene (has) ahora (now)?",
+        "L4_english": "Ana has 8 books. Her friend gives her 5 more books. How many books does Ana have now?",
+        "L5_solution": "Step 1: Add — 8 + 5\nStep 2: = 13\nAnswer: 13"
+      }
+    },
+    "1.1.08": {
+      "id": "1.1.08",
+      "level": "1.1",
+      "topic": "arithmetic",
+      "problem_text": "There are 20 cookies on a plate. Kids eat 9 cookies. How many cookies are left?",
+      "answer": "11",
+      "gloss_l2": ["galletas", "niños", "comen"],
+      "gloss_l3_adds": ["Hay", "cuántas", "quedan"],
+      "scaffolds": {
+        "L0_spanish": "Hay 20 galletas. Los niños comen 9. ¿Cuántas quedan?",
+        "L1_simplified": "Hay 20 galletas. Comen 9. ¿Cuántas quedan?",
+        "L2_new_glosses": "Hay 20 galletas (cookies). Los niños (kids) comen (eat) 9. ¿Cuántas quedan?",
+        "L3_all_glosses": "Hay (there are) 20 galletas (cookies). Los niños (kids) comen (eat) 9. ¿Cuántas (how many) quedan (are left)?",
+        "L4_english": "There are 20 cookies on a plate. Kids eat 9 cookies. How many cookies are left?",
+        "L5_solution": "Step 1: Subtract — 20 - 9\nStep 2: = 11\nAnswer: 11"
+      }
+    }
+  },
+  "vocab": [
+    {
+      "id": "mas",
+      "coreId": "mas",
+      "prompt": "In the hints, what does **más** mean?",
+      "choices": ["more", "less", "many", "zero"],
+      "correct": 0
+    },
+    {
+      "id": "cuantos",
+      "coreId": "cuantos",
+      "prompt": "What do **cuántos** / **cuántas** mean?",
+      "choices": ["how many", "how much (liquid)", "because", "always"],
+      "correct": 0
+    },
+    {
+      "id": "tiene",
+      "coreId": "tiene",
+      "prompt": "What does **tiene** mean?",
+      "choices": ["has", "takes", "gives", "eats"],
+      "correct": 0
+    },
+    {
+      "id": "quedan",
+      "coreId": "quedan",
+      "prompt": "What does **quedan** mean?",
+      "choices": ["are left / remain", "fly away", "give", "add"],
+      "correct": 0
+    },
+    {
+      "id": "toma",
+      "coreId": "toma",
+      "prompt": "What does **toma** mean?",
+      "choices": ["takes", "makes", "has", "sells"],
+      "correct": 0
+    },
+    {
+      "id": "da",
+      "coreId": "da",
+      "prompt": "What does **da** / **le da** mean?",
+      "choices": ["gives", "gets", "runs", "hides"],
+      "correct": 0
+    },
+    {
+      "id": "en_total",
+      "coreId": "en_total",
+      "prompt": "What does **en total** mean?",
+      "choices": ["in total / altogether", "in the box", "every day", "never"],
+      "correct": 0
+    }
+  ]
+}
